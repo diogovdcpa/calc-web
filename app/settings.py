@@ -15,8 +15,9 @@ def get_settings() -> Settings:
     - DATABASE_URL: URL do SQLite por padrão (calcweb.sqlite na raiz do projeto).
     - SECRET_KEY: chave para sessão/flash.
     """
-    base_dir = Path(__file__).resolve().parent.parent
-    default_db = base_dir / "calcweb.sqlite"
+    # Em ambientes serverless (ex: Vercel), apenas /tmp é gravável.
+    default_db = Path(os.getenv("SQLITE_PATH", "/tmp/calcweb.sqlite"))
+    default_db.parent.mkdir(parents=True, exist_ok=True)
 
     database_url = os.getenv("DATABASE_URL", f"sqlite:///{default_db}")
     secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
