@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+    <div class="actions">
+        <div>
+            <h1>Sizings</h1>
+            <p class="muted">Dashboard com todos os sizings da empresa.</p>
+        </div>
+        <div class="nav-spacer"></div>
+        <a class="btn btn-primary" href="{{ url_for('sizing.create_sizing') }}">+ Novo sizing</a>
+    </div>
+
+    {% if sizings %}
+        <table class="mt-2">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Ativos</th>
+                    <th>Criado por</th>
+                    <th>Criado em</th>
+                    <th class="text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sizing in sizings %}
+                    <tr>
+                        <td><a href="{{ url_for('sizing.show_sizing', sizing_id=sizing.id) }}">{{ sizing.title }}</a></td>
+                        <td>{{ sizing.assets|length }}</td>
+                        <td>{{ sizing.owner.name }}</td>
+                        <td>{{ sizing.created_at.strftime('%d/%m/%Y') if sizing.created_at else '-' }}</td>
+                        <td class="text-right table-actions">
+                            <a class="btn btn-ghost" href="{{ url_for('sizing.show_sizing', sizing_id=sizing.id) }}">Abrir</a>
+                            <a class="btn btn-ghost" href="{{ url_for('sizing.edit_sizing', sizing_id=sizing.id) }}">Editar</a>
+                            <form method="post" action="{{ url_for('sizing.delete_sizing', sizing_id=sizing.id) }}" onsubmit="return confirm('Deseja remover este sizing?');">
+                                <button class="btn btn-danger" type="submit">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted mt-2">Nenhum sizing ainda. Crie o primeiro para começar.</p>
+    {% endif %}
+</div>
+{% endblock %}
